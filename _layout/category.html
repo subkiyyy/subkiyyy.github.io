@@ -1,0 +1,33 @@
+---
+layout: default
+---
+
+<div class="category-page">
+  <div class="category-header">
+    <span class="hero-category">Category</span>
+    <h1>{{ page.cat_name }}</h1>
+    {% if page.description %}<p class="hero-dek">{{ page.description }}</p>{% endif %}
+  </div>
+
+  <div class="section-rule"><hr></div>
+
+  <div class="essay-list">
+    {% assign essays = site.essays | where: "category", page.cat_name | sort: "date" | reverse %}
+    {% for essay in essays %}
+    <a class="essay-list-item" href="{{ essay.url | relative_url }}">
+      <div class="essay-list-meta">
+        <span class="hero-category">{{ essay.category }}</span>
+        <div class="hero-dot"></div>
+        <span class="hero-date">{{ essay.date | date: "%e %B %Y" }}</span>
+      </div>
+      <h2>{{ essay.title }}</h2>
+      <p>{{ essay.dek }}</p>
+      <span class="read-more">Read essay →</span>
+    </a>
+    {% endfor %}
+
+    {% if essays.size == 0 %}
+    <p style="color:var(--ink-faint); font-family:'DM Sans',sans-serif;">No essays in this category yet.</p>
+    {% endif %}
+  </div>
+</div>
