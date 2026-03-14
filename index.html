@@ -1,0 +1,46 @@
+---
+layout: default
+title: Home
+---
+
+<div class="homepage">
+
+  <!-- Featured essay (most recent) -->
+  {% assign featured = site.essays | sort: "date" | reverse | first %}
+  {% if featured %}
+  <div class="featured">
+    <a class="featured-inner" href="{{ featured.url | relative_url }}">
+      <div class="featured-text">
+        <div class="hero-meta">
+          <span class="hero-category">{{ featured.category }}</span>
+          <div class="hero-dot"></div>
+          <span class="hero-date">{{ featured.date | date: "%e %B %Y" }}</span>
+        </div>
+        <h1>{{ featured.title }}</h1>
+        <p class="hero-dek">{{ featured.dek }}</p>
+        <span class="read-more">Read essay →</span>
+      </div>
+    </a>
+  </div>
+  {% endif %}
+
+  <div class="section-rule"><hr></div>
+
+  <!-- All essays -->
+  <div class="essay-list">
+    {% assign essays = site.essays | sort: "date" | reverse | offset: 1 %}
+    {% for essay in essays %}
+    <a class="essay-list-item" href="{{ essay.url | relative_url }}">
+      <div class="essay-list-meta">
+        <span class="hero-category">{{ essay.category }}</span>
+        <div class="hero-dot"></div>
+        <span class="hero-date">{{ essay.date | date: "%e %B %Y" }}</span>
+      </div>
+      <h2>{{ essay.title }}</h2>
+      <p>{{ essay.dek }}</p>
+      <span class="read-more">Read essay →</span>
+    </a>
+    {% endfor %}
+  </div>
+
+</div>

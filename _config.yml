@@ -1,0 +1,25 @@
+title: Logos
+description: Essays on ideas that matter
+url: ""               # e.g. https://yourusername.github.io
+baseurl: ""           # e.g. /my-site  (leave empty if repo name = username.github.io)
+
+permalink: /essays/:title/
+
+collections:
+  essays:
+    output: true
+    permalink: /essays/:title/
+
+# Add your categories here — they appear in the nav
+categories_list:
+  - Philosophy
+  - Mathematics
+  - Science
+  - Society
+
+defaults:
+  - scope:
+      path: ""
+      type: essays
+    values:
+      layout: essay
