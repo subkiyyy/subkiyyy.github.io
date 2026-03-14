@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Rise and Fall and Rise of Logic — Your Publication</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cormorant+SC:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── Tokens ─────────────────────────────────────────── */
+    :root {
+      --ink:        #1a1714;
+      --ink-light:  #5a5450;
+      --ink-faint:  #9a9490;
+      --paper:      #faf8f4;
+      --paper-warm: #f2ede4;
+      --accent:     #b04a2a;
+      --accent-dim: #d4795e;
+      --rule:       #ddd8cf;
+      --col:        680px;
+      --wide:       900px;
+    }
+
+    /* ─── Reset ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.78;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Reading Progress ───────────────────────────────── */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 100;
+      transition: width 0.1s linear;
+    }
+
+    /* ─── Navigation ─────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+      z-index: 50;
+      padding: 0 2rem;
+    }
+
+    .nav-inner {
+      max-width: var(--wide);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+
+    .site-name {
+      font-family: 'Cormorant SC', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ─── Hero ───────────────────────────────────────────── */
+    .hero {
+      max-width: var(--wide);
+      margin: 0 auto;
+      padding: 5rem 2rem 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: end;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-category {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .hero-dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--rule);
+    }
+
+    .hero-date {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      color: var(--ink-faint);
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 300;
+      line-height: 1.12;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent-dim);
+    }
+
+    .hero-right {
+      padding-bottom: 0.5rem;
+    }
+
+    .hero-dek {
+      font-size: 1.2rem;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--ink-light);
+      font-style: italic;
+      margin-bottom: 2rem;
+    }
+
+    .hero-author-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .author-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--paper-warm);
+      border: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      flex-shrink: 0;
+    }
+
+    .author-info {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+    }
+
+    .author-name {
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .author-title {
+      color: var(--ink-faint);
+      font-size: 0.72rem;
+      margin-top: 1px;
+    }
+
+    /* ─── Hero Image ─────────────────────────────────────── */
+    .hero-image {
+      max-width: var(--wide);
+      margin: 0 auto 0;
+      padding: 0 2rem;
+    }
+
+    .hero-image figure {
+      width: 100%;
+      aspect-ratio: 16 / 7;
+      background: var(--paper-warm);
+      border: 1px solid var(--rule);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Decorative placeholder image */
+    .hero-image figure::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 30% 60%, #c4956a22 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 30%, #b04a2a18 0%, transparent 55%),
+        linear-gradient(160deg, #f2ede4 0%, #e8e0d4 100%);
+    }
+
+    /* Decorative SVG pattern overlay */
+    .hero-image figure::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c4956a' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero-image figcaption {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.7rem;
+      color: var(--ink-faint);
+      margin-top: 0.6rem;
+      letter-spacing: 0.03em;
+      /* Replace placeholder text with your real caption */
+    }
+
+    /* Replace this with an actual <img> tag pointing to your image */
+    .img-placeholder-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      z-index: 1;
+    }
+
+    /* ─── Divider ─────────────────────────────────────────── */
+    .section-rule {
+      max-width: var(--wide);
+      margin: 3rem auto;
+      padding: 0 2rem;
+    }
+
+    .section-rule hr {
+      border: none;
+      border-top: 1px solid var(--rule);
+    }
+
+    /* ─── Article Body ────────────────────────────────────── */
+    article {
+      max-width: var(--col);
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+    }
+
+    /* Drop cap on first paragraph */
+    article > p:first-of-type::first-letter {
+      font-family: 'Cormorant SC', serif;
+      font-size: 4.5em;
+      font-weight: 600;
+      float: left;
+      line-height: 0.78;
+      margin: 0.06em 0.1em -0.05em 0;
+      color: var(--ink);
+    }
+
+    article p {
+      margin-bottom: 1.5em;
+    }
+
+    article h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.65rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      margin: 2.5em 0 0.8em;
+      color: var(--ink);
+    }
+
+    article h3 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 2.5em 0 0.5em;
+    }
+
+    /* ─── Pull Quote ─────────────────────────────────────── */
+    blockquote.pull {
+      margin: 2.5em -3rem;
+      padding: 1.8rem 3rem;
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      background: var(--paper-warm);
+    }
+
+    blockquote.pull p {
+      font-size: 1.5rem;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.5;
+      color: var(--ink);
+      margin: 0;
+    }
+
+    blockquote.pull p::before { content: '\201C'; color: var(--accent-dim); }
+    blockquote.pull p::after  { content: '\201D'; color: var(--accent-dim); }
+
+    blockquote.pull cite {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-style: normal;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-top: 0.8rem;
+    }
+
+    /* ─── Inline Quote ────────────────────────────────────── */
+    blockquote.inline {
+      margin: 1.5em 0 1.5em 2rem;
+      padding-left: 1.2rem;
+      border-left: 2px solid var(--accent-dim);
+    }
+
+    blockquote.inline p {
+      font-style: italic;
+      color: var(--ink-light);
+      margin: 0;
+    }
+
+    /* ─── Footnote refs ──────────────────────────────────── */
+    sup a {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.65rem;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ─── Author Bio ─────────────────────────────────────── */
+    .author-bio {
+      max-width: var(--col);
+      margin: 0 auto;
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .author-bio .author-avatar {
+      width: 60px;
+      height: 60px;
+      font-size: 1.1rem;
+    }
+
+    .author-bio-text h4 {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+    }
+
+    .author-bio-text p {
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: var(--ink-light);
+    }
+
+    /* ─── Tags ───────────────────────────────────────────── */
+    .tags {
+      max-width: var(--col);
+      margin: 0 auto;
+      padding: 0 2rem 3rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      padding: 0.25rem 0.7rem;
+      color: var(--ink-light);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .tag:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ─── Related ─────────────────────────────────────────── */
+    .related {
+      background: var(--paper-warm);
+      border-top: 1px solid var(--rule);
+      padding: 4rem 2rem;
+      margin-top: 2rem;
+    }
+
+    .related-inner {
+      max-width: var(--wide);
+      margin: 0 auto;
+    }
+
+    .related h2 {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 2.5rem;
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+
+    .related-card {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .related-card-cat {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .related-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 400;
+      line-height: 1.3;
+      margin-bottom: 0.5rem;
+      transition: color 0.2s;
+    }
+
+    .related-card:hover h3 { color: var(--accent); }
+
+    .related-card p {
+      font-size: 0.82rem;
+      color: var(--ink-faint);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* ─── Footer ─────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 2.5rem 2rem;
+      border-top: 1px solid var(--rule);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--ink-faint);
+    }
+
+    footer a { color: var(--ink-faint); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    /* ─── Responsive ─────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; gap: 1.5rem; padding-top: 3rem; }
+      .related-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      blockquote.pull { margin: 2em 0; }
+      .nav-links { display: none; }
+      body { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Reading progress bar -->
+  <div id="progress-bar"></div>
+
+  <!-- ─── Navigation ─────────────────────────────────── -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="site-name">Logos</a>
+      <ul class="nav-links">
+        <li><a href="#">Philosophy</a></li>
+        <li><a href="#">Mathematics</a></li>
+        <li><a href="#">Science</a></li>
+        <li><a href="#">Society</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ─── Hero ───────────────────────────────────────── -->
+  <header>
+    <div class="hero">
+      <div class="hero-left">
+        <div class="hero-meta">
+          <span class="hero-category">Philosophy · Logic</span>
+          <div class="hero-dot"></div>
+          <span class="hero-date">14 March 2026 · 18 min read</span>
+        </div>
+        <h1>The Rise and Fall<br>and <em>Rise</em> of Logic</h1>
+      </div>
+
+      <div class="hero-right">
+        <p class="hero-dek">
+          Once dismissed as a dusty relic of scholastic philosophy,
+          formal logic has re-emerged at the beating heart of computer science,
+          artificial intelligence and cognitive science. How did this happen —
+          and what does it mean for the way we reason?
+        </p>
+        <div class="hero-author-row">
+          <div class="author-avatar">AW</div>
+          <div class="author-info">
+            <div class="author-name">Alexandra Woolf</div>
+            <div class="author-title">Professor of Philosophy, University of Edinburgh</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero image -->
+    <div class="hero-image">
+      <figure>
+        <!--
+          REPLACE THE PLACEHOLDER BELOW WITH YOUR OWN IMAGE:
+          <img src="your-image.jpg" alt="Description of your image" style="width:100%;height:100%;object-fit:cover;">
+        -->
+        <div class="img-placeholder-label">Your hero image here</div>
+      </figure>
+      <figcaption>Your image caption goes here — photograph courtesy of …</figcaption>
+    </div>
+  </header>
+
+  <div class="section-rule"><hr></div>
+
+  <!-- ─── Article ────────────────────────────────────── -->
+  <article>
+
+    <p>
+      There is a peculiar irony at the heart of modern intellectual life.
+      At the very moment that philosophy departments across the English-speaking
+      world began to question whether formal logic was too narrow, too technical,
+      too divorced from human experience to tell us anything meaningful about
+      the world — computers arrived and proved them catastrophically wrong.
+    </p>
+
+    <p>
+      The story begins in antiquity. Aristotle's <em>Organon</em> laid out,
+      for the first time, a systematic account of valid inference. His syllogistic
+      — the rules governing arguments of the form "all men are mortal, Socrates is
+      a man, therefore Socrates is mortal" — dominated Western thought for two
+      millennia. It was, in its way, an extraordinary achievement: the codification
+      of something that every rational being does implicitly, rendered explicit
+      and teachable.
+    </p>
+
+    <h2>The Triumph of the Schoolmen</h2>
+
+    <p>
+      Medieval logicians, working within the framework Aristotle had bequeathed,
+      pushed the machinery much further. The <em>terminist</em> logicians of the
+      fourteenth century — William of Ockham, Jean Buridan, Albert of Saxony —
+      developed a remarkably sophisticated theory of reference and truth,
+      anticipating questions that would not be rigorously posed again until
+      the late nineteenth century.<sup><a href="#fn1" id="ref1">1</a></sup>
+    </p>
+
+    <p>
+      But the Renaissance brought a different wind. Humanist scholars, impatient
+      with what they saw as the sterile word-games of the scholastics, turned away
+      from formal logic toward rhetoric, philology, and the direct study of ancient
+      texts. Logic retreated into the curriculum as a compulsory but largely
+      despised preliminary to the real work of philosophy.
+    </p>
+
+    <!-- Pull quote -->
+    <blockquote class="pull">
+      <p>
+        The question is not whether machines can think, but whether the rules
+        of thought are themselves a kind of machine.
+      </p>
+      <cite>Gottlob Frege, 1879</cite>
+    </blockquote>
+
+    <h2>Frege's Revolution</h2>
+
+    <p>
+      The decisive break came in 1879, when a virtually unknown German
+      mathematician named Gottlob Frege published a slender pamphlet he called
+      the <em>Begriffsschrift</em> — "concept script." In it he did something
+      no one had managed to do in two thousand years of logic: he invented a
+      notation powerful enough to represent the full complexity of mathematical
+      reasoning, and showed how every valid inference could be reduced to a
+      small set of primitive rules.
+    </p>
+
+    <h3>A new symbolic language</h3>
+
+    <p>
+      Frege's system was ugly by modern standards — his two-dimensional notation
+      has never been adopted, and even at the time it was largely ignored. But
+      the underlying idea was revolutionary. By treating logical form as something
+      that could be studied independently of content, Frege opened the door to
+      the work of Russell, Whitehead, and ultimately Gödel, Turing, and Church.
+    </p>
+
+    <!-- Inline blockquote -->
+    <blockquote class="inline">
+      <p>
+        "The whole of mathematics follows from a handful of logical axioms" —
+        this was the dream of <em>logicism</em>, and for a brief moment in the
+        early twentieth century, it seemed within reach.
+      </p>
+    </blockquote>
+
+    <p>
+      Then came the incompleteness theorems, and the dream fractured.
+      Kurt Gödel showed in 1931 that any sufficiently powerful formal system
+      must contain true statements that cannot be proved within that system.
+      It was a result of extraordinary philosophical depth, and it was widely
+      — if incorrectly — taken to mean that logic had hit a wall, that
+      formalism had been shown to be insufficient for capturing mathematical
+      truth.
+    </p>
+
+    <h2>The Computational Resurrection</h2>
+
+    <p>
+      What rescued logic from this apparent defeat was something nobody
+      anticipated: the computer. Alan Turing's 1936 paper on computable numbers
+      was, in one sense, another negative result — a proof that certain problems
+      cannot be solved algorithmically. But in showing what a mechanical process
+      of symbol manipulation could in principle accomplish, Turing accidentally
+      sketched the blueprint for every digital computer ever built.
+    </p>
+
+    <p>
+      Today logic permeates the infrastructure of modern life. Every time
+      a chip performs a Boolean operation, every time a database executes a query,
+      every time a proof assistant verifies a piece of software, the ghost of
+      Aristotle and the genius of Frege are silently at work. The schoolmen
+      were not wasting their time after all.
+    </p>
+
+    <!-- Footnotes -->
+    <hr style="margin:3em 0 2em; border:none; border-top:1px solid var(--rule);">
+    <div style="font-size:0.82rem; color:var(--ink-light); line-height:1.7;">
+      <p id="fn1"><sup>1</sup> See Gyula Klima, <em>John Buridan</em> (Oxford University Press, 2009)
+      for the best modern treatment. <a href="#ref1" style="color:var(--accent);">↩</a></p>
+    </div>
+
+  </article>
+
+  <!-- ─── Author Bio ──────────────────────────────────── -->
+  <div class="author-bio">
+    <div class="author-avatar">AW</div>
+    <div class="author-bio-text">
+      <h4>Alexandra Woolf</h4>
+      <p>
+        Alexandra Woolf is Professor of Philosophy at the University of Edinburgh,
+        where she specialises in the history of logic and the philosophy of mathematics.
+        Her most recent book is <em>The Formal Turn</em> (Princeton, 2024).
+      </p>
+    </div>
+  </div>
+
+  <!-- ─── Tags ───────────────────────────────────────── -->
+  <div class="tags">
+    <a class="tag" href="#">Logic</a>
+    <a class="tag" href="#">Philosophy of Mathematics</a>
+    <a class="tag" href="#">History of Ideas</a>
+    <a class="tag" href="#">Computing</a>
+    <a class="tag" href="#">Aristotle</a>
+    <a class="tag" href="#">Frege</a>
+  </div>
+
+  <!-- ─── Related Essays ─────────────────────────────── -->
+  <section class="related">
+    <div class="related-inner">
+      <h2>Further Reading</h2>
+      <div class="related-grid">
+
+        <a class="related-card" href="#">
+          <div class="related-card-cat">Mathematics</div>
+          <h3>What Gödel Really Proved</h3>
+          <p>The incompleteness theorems are the most misunderstood results in all of mathematics.</p>
+        </a>
+
+        <a class="related-card" href="#">
+          <div class="related-card-cat">Computing</div>
+          <h3>The Church–Turing Thesis at 90</h3>
+          <p>A conjecture that became the foundation of computer science is due for reappraisal.</p>
+        </a>
+
+        <a class="related-card" href="#">
+          <div class="related-card-cat">Philosophy</div>
+          <h3>Against Intuition</h3>
+          <p>Why the most powerful tool in formal reasoning is also its greatest enemy.</p>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Footer ─────────────────────────────────────── -->
+  <footer>
+    <p>© 2026 Logos. All rights reserved. &nbsp;·&nbsp;
+      <a href="#">Privacy</a> &nbsp;·&nbsp;
+      <a href="#">Contact</a> &nbsp;·&nbsp;
+      <a href="#">RSS</a>
+    </p>
+  </footer>
+
+  <!-- ─── Reading Progress Script ───────────────────── -->
+  <script>
+    const bar = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (scrolled / total * 100) + '%';
+    });
+  </script>
+
+</body>
+</html>
