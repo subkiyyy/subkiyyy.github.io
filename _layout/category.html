@@ -1,33 +1,74 @@
 ---
-layout: null
+layout: default
 ---
-
-<div class="category-page">
-  <div class="category-header">
-    <span class="hero-category">Category</span>
-    <h1>{{ page.cat_name }}</h1>
-    {% if page.description %}<p class="hero-dek">{{ page.description }}</p>{% endif %}
+<header>
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-meta">
+        <a class="hero-category" href="{{ '/categories/' | append: page.category | downcase | relative_url }}">{{ page.category }}</a>
+        <div class="hero-dot"></div>
+        <span class="hero-date">{{ page.date | date: "%-d %B %Y" }}{% if page.read_time %} · {{ page.read_time }} min read{% endif %}</span>
+      </div>
+      <h1>{{ page.title }}</h1>
+    </div>
+    <div class="hero-right">
+      <p class="hero-dek">{{ page.dek }}</p>
+      <div class="hero-author-row">
+        <div class="author-avatar">{{ page.author | split: ' ' | first | slice: 0 }}{{ page.author | split: ' ' | last | slice: 0 }}</div>
+        <div class="author-info">
+          <div class="author-name">{{ page.author }}</div>
+          <div class="author-title">{{ page.author_title }}</div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="section-rule"><hr></div>
+  {% if page.image %}
+  <div class="hero-image">
+    <figure>
+      <img src="{{ page.image | relative_url }}" alt="{{ page.image_alt | default: page.title }}">
+    </figure>
+    {% if page.image_caption %}<figcaption>{{ page.image_caption }}</figcaption>{% endif %}
+  </div>
+  {% endif %}
+</header>
 
-  <div class="essay-list">
-    {% assign essays = site.essays | where: "category", page.cat_name | sort: "date" | reverse %}
-    {% for essay in essays %}
-    <a class="essay-list-item" href="{{ essay.url | relative_url }}">
-      <div class="essay-list-meta">
-        <span class="hero-category">{{ essay.category }}</span>
-        <div class="hero-dot"></div>
-        <span class="hero-date">{{ essay.date | date: "%e %B %Y" }}</span>
-      </div>
-      <h2>{{ essay.title }}</h2>
-      <p>{{ essay.dek }}</p>
-      <span class="read-more">Read essay →</span>
-    </a>
-    {% endfor %}
+<div class="section-rule"><hr></div>
 
-    {% if essays.size == 0 %}
-    <p style="color:var(--ink-faint); font-family:'DM Sans',sans-serif;">No essays in this category yet.</p>
-    {% endif %}
+<article>
+  {{ content }}
+</article>
+
+<div class="author-bio">
+  <div class="author-avatar">{{ page.author | split: ' ' | first | slice: 0 }}{{ page.author | split: ' ' | last | slice: 0 }}</div>
+  <div class="author-bio-text">
+    <h4>{{ page.author }}</h4>
+    <p>{{ page.author_bio }}</p>
   </div>
 </div>
+
+{% if page.tags %}
+<div class="tags">
+  {% for tag in page.tags %}
+  <a class="tag" href="{{ '/tags/' | append: tag | downcase | relative_url }}">{{ tag }}</a>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% assign related = site.essays | where: "category", page.category | where_exp: "e", "e.title != page.title" | limit: 3 %}
+{% if related.size > 0 %}
+<section class="related">
+  <div class="related-inner">
+    <h2>Further Reading</h2>
+    <div class="related-grid">
+      {% for essay in related %}
+      <a class="related-card" href="{{ essay.url | relative_url }}">
+        <div class="related-card-cat">{{ essay.category }}</div>
+        <h3>{{ essay.title }}</h3>
+        <p>{{ essay.dek | truncate: 100 }}</p>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
